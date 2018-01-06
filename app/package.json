@@ -1,0 +1,61 @@
+{
+  "name": "wall-painter",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "dev": "gulp browser-sync",
+    "prebuild": "gulp clean",
+    "build": "cross-env NODE_ENV=production gulp build",
+    "lint": "eslint --ext .js,.vue .",
+    "svgo": "svgo --config .svgo.yml src/resources/icons",
+    "prepush": "npm run lint"
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.36",
+    "@babel/preset-env": "^7.0.0-beta.36",
+    "@babel/preset-stage-2": "^7.0.0-beta.36",
+    "autoprefixer": "^7.2.4",
+    "babel-eslint": "^8.1.2",
+    "babel-loader": "8.0.0-beta.0",
+    "babel-minify-webpack-plugin": "^0.2.0",
+    "browser-sync": "^2.23.3",
+    "cross-env": "^5.1.3",
+    "css-loader": "^0.28.8",
+    "del": "^3.0.0",
+    "eslint": "^4.14.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-import-resolver-webpack": "^0.8.4",
+    "eslint-plugin-html": "^4.0.1",
+    "eslint-plugin-import": "^2.8.0",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^1.1.6",
+    "gulp": "^3.9.1",
+    "gulp-util": "^3.0.8",
+    "html-webpack-inline-source-plugin": "^0.0.9",
+    "html-webpack-plugin": "^2.30.1",
+    "husky": "^0.14.3",
+    "postcss-loader": "^2.0.10",
+    "postcss-scss": "^1.0.3",
+    "precss": "^2.0.0",
+    "style-loader": "^0.19.1",
+    "svg-sprite-loader": "^3.6.2",
+    "url-loader": "^0.6.2",
+    "vue-loader": "^13.6.2",
+    "vue-style-loader": "^3.0.3",
+    "vue-template-compiler": "^2.5.13",
+    "webpack": "^3.10.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.0.0-beta.36",
+    "axios": "^0.17.1",
+    "font-awesome": "^4.7.0",
+    "spectre.css": "^0.5.0",
+    "vue": "^2.5.13"
+  }
+}

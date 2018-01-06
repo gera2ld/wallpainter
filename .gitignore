@@ -1,3 +1,6 @@
 /python
 __pycache__
 /data
+
+node_modules
+yarn.lock

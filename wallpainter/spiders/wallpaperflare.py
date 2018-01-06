@@ -8,10 +8,6 @@ class WallpaperFlareImageItem(scrapy.Item):
 class WallpaperFlare(scrapy.Spider):
     name = 'wallpaperflare'
 
-    custom_settings = {
-        'IMAGES_STORE': f'data/{name}',
-    }
-
     start_urls = ['https://www.wallpaperflare.com/tag/nature?page=1']
 
     def parse(self, response):

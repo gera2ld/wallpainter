@@ -1,0 +1,14 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "main": "app/index.js",
+  "author": "Gerald <i@gerald.top>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "ENTRY_URL=http://localhost:3000 electron .",
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron": "^1.7.10"
+  }
+}

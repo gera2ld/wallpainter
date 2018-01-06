@@ -68,6 +68,11 @@ ITEM_PIPELINES = {
     'scrapy.pipelines.images.ImagesPipeline': 1,
     'wallpainter.pipelines.SqlitePipeline': 2,
 }
+IMAGES_STORE = 'data'
+IMAGES_THUMBS = {
+    'small': (50, 50),
+    'big': (270, 270),
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html

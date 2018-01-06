@@ -9,10 +9,6 @@ class BingImageItem(scrapy.Item):
 class Bing(scrapy.Spider):
     name = 'bing'
 
-    custom_settings = {
-        'IMAGES_STORE': f'data/{name}',
-    }
-
     start_urls = ['https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=10']
 
     def parse(self, response):
