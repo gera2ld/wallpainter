@@ -3,15 +3,19 @@
   "version": "0.0.0",
   "private": true,
   "description": "",
-  "author": "",
+  "author": "Gerald <i@gerald.top>",
   "license": "ISC",
+  "main": "index.js",
   "scripts": {
-    "dev": "gulp browser-sync",
+    "dev:web": "gulp browser-sync",
+    "dev:core": "cross-env ENTRY_URL=http://localhost:3000 electron .",
+    "dev:core:unix": "cross-env PYTHON=python/bin/python yarn dev:core",
+    "dev:core:win": "cross-env PYTHON=python/scripts/python yarn dev:core",
     "prebuild": "gulp clean",
     "build": "cross-env NODE_ENV=production gulp build",
     "lint": "eslint --ext .js,.vue .",
     "svgo": "svgo --config .svgo.yml src/resources/icons",
-    "prepush": "npm run lint"
+    "start": "electron ."
   },
   "engines": {
     "node": ">=8"
@@ -54,6 +58,7 @@
   "dependencies": {
     "@babel/runtime": "^7.0.0-beta.36",
     "axios": "^0.17.1",
+    "electron": "^1.7.10",
     "font-awesome": "^4.7.0",
     "spectre.css": "^0.5.0",
     "vue": "^2.5.13"
