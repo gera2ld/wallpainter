@@ -1,16 +1,16 @@
-from .utils import register, start_server
+from .utils import register, start_server, update_file
 from ..db import db
 
 @register
-async def sayHi(name):
+async def say_hi(name):
     return f'Hi, {name}!'
 
 @register
-def getItem(key):
+def get_item(key):
     return db.query_sql('SELECT * FROM images WHERE key=?', (key,))
 
 @register
-def getList(params=None):
+def get_list(params=None):
     params = params or {}
     page = int(params.get('page', 1))
     per = int(params.get('per', 10))
@@ -42,8 +42,7 @@ def getList(params=None):
     return {'rows': rows, 'total': count['total'], 'page': page, 'per': per}
 
 @register
-def setItem(key, data):
-    values = {}
+def set_item(key, data):
     entries = []
     args = []
     for entry in ('status',):
@@ -56,5 +55,15 @@ def setItem(key, data):
         args.append(key)
         sql = ['UPDATE images SET', update, 'WHERE key=?']
         db.exec_sql(' '.join(sql), args)
+        status = data.get('status')
+        if status is not None:
+            update_file(key, status)
         return True
     return False
+
+@register
+def rebuild():
+    rows = db.query_sql('SELECT key, status FROM images', (), False)
+    for row in rows:
+        update_file(row['key'], row['status'])
+    return True
