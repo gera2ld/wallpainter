@@ -47,6 +47,7 @@ async def image_handler(request):
     except FileNotFoundError:
         raise web.HTTPNotFound()
     else:
+        print('loaded image:', filename)
         return web.Response(
             headers={
                 'Cache-Control': 'public, max-age=31536000',

@@ -70,7 +70,6 @@ ITEM_PIPELINES = {
 }
 IMAGES_STORE = 'data'
 IMAGES_THUMBS = {
-    'small': (50, 50),
     'big': (270, 270),
 }
 
