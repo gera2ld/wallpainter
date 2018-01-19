@@ -1,5 +1,5 @@
 <template>
-  <div class="container grid-lg">
+  <div class="container grid-lg container-root d-flex flex-column p-2">
     <header class="navbar">
       <section class="navbar-section">
         <h1>WallPainter</h1>
@@ -8,7 +8,7 @@
         <i class="fa fa-refresh btn-icon" @click="onRefresh" />
       </section>
     </header>
-    <div class="content" v-if="store.images">
+    <div class="content flex-auto" v-if="store.images">
       <div class="columns">
         <div
           v-for="(item, index) in store.images.rows"
@@ -16,10 +16,10 @@
           @mouseenter="hovered = item"
           @mouseleave="hovered = null">
           <div class="image">
-            <img
-              class="img-responsive"
+            <div
+              class="image-bg"
               :class="{disabled: item.status === 1}"
-              :src="getThumbSrc(item)"
+              :style="{backgroundImage: `url(${getThumbSrc(item)})`}"
               @click="onShow(index)"
             />
             <div class="image-buttons p-2" v-if="hovered === item">
@@ -73,7 +73,7 @@ export default {
   },
   methods: {
     getThumbSrc(item) {
-      return `${BASE_URL}/images/full/${item.key}`;
+      return `${BASE_URL}/images/big/${item.key}`;
     },
     getFullSrc(item) {
       return `${BASE_URL}/images/full/${item.key}`;
@@ -95,7 +95,7 @@ export default {
       return this.activeIndex > 0;
     },
     hasNext() {
-      return this.activeIndex < this.store.images.rows.length - 1;
+      return this.store.images.rows && this.activeIndex < this.store.images.rows.length - 1;
     },
     onPrev() {
       if (this.hasPrev()) this.activeIndex -= 1;
@@ -109,6 +109,9 @@ export default {
 </script>
 
 <style>
+.container-root {
+  height: 100vh;
+}
 .flex-column {
   flex-direction: column;
 }
@@ -116,15 +119,12 @@ export default {
   flex: auto;
 }
 .content {
-  min-height: 540px;
+  padding: 8px;
+  overflow: auto;
   border: 1px solid #888;
-}
-img.disabled {
-  filter: opacity(.5);
 }
 .image {
   position: relative;
-  height: 180px;
   margin-bottom: 10px;
   overflow: hidden;
   &-buttons {
@@ -135,6 +135,15 @@ img.disabled {
     text-align: right;
     background: rgba(0,0,0,.7);
     color: white;
+  }
+  &-bg {
+    padding-bottom: calc(9 / 16 * 100%);
+    background-color: #eee;
+    background-size: cover;
+    background-position: center;
+    &.disabled {
+      filter: opacity(.5);
+    }
   }
 }
 .modal.active .modal-container {
