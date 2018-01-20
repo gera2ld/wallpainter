@@ -53,6 +53,9 @@ export default {
     height: 50px;
   }
 }
+.h-100 {
+  height: 100%;
+}
 .flex-column {
   flex-direction: column;
 }

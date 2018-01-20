@@ -29,8 +29,20 @@
     <div v-if="!loading && !hasMore" class="divider text-center" data-content="The end"></div>
     <div class="modal" :class="{active: activeIndex >= 0}" @click="onShow(-1)">
       <div class="modal-container">
-        <div class="modal-body">
-          <div class="modal-image" v-if="activeIndex >= 0" :style="{backgroundImage: `url(${getFullSrc(store.images.rows[activeIndex])})`}" />
+        <div class="modal-body" v-if="activeItem">
+          <div class="d-flex flex-column h-100">
+            <header class="d-flex" @click.stop>
+              <div class="flex-auto text-gray" v-text="activeItem.key"></div>
+              <div>
+                <i
+                  class="fa ml-2 btn-icon"
+                  :class="{0: 'fa-toggle-on', 1: 'fa-toggle-off'}[activeItem.status]"
+                  @click="onToggle(activeItem)"
+                />
+              </div>
+            </header>
+            <div class="flex-auto modal-image" :style="{backgroundImage: `url(${getFullSrc(activeItem)})`}"></div>
+          </div>
           <div
             class="modal-button modal-button-left btn-icon"
             :class="{disabled: !hasPrev()}"
@@ -65,6 +77,10 @@ export default {
   computed: {
     hasMore() {
       return this.store.search.offset < this.store.images.total;
+    },
+    activeItem() {
+      const { rows } = this.store.images;
+      return rows && rows[this.activeIndex];
     },
   },
   watch: {
@@ -162,8 +178,6 @@ export default {
   }
 }
 .modal-image {
-  width: 100%;
-  height: 100%;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
