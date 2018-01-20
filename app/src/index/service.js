@@ -37,15 +37,15 @@ async function loadPage() {
 export async function updateList() {
   store.search.offset = 0;
   const images = await loadPage();
-  store.images = images;
   store.search.offset = images.offset + images.rows.length;
+  store.images = images;
 }
 
 export async function loadMore() {
   if (store.search.offset < store.images.total) {
     const images = await loadPage();
+    store.search.offset = images.offset + images.rows.length;
     images.rows = store.images.rows.slice(0, images.offset).concat(images.rows);
     store.images = images;
-    store.search.offset = images.offset + images.rows.length;
   }
 }

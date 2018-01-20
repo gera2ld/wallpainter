@@ -1,5 +1,5 @@
 <template>
-  <div class="content flex-auto" v-if="store.images">
+  <div class="content flex-auto" v-if="store.images" @scroll="checkMore" ref="scrollArea">
     <div class="columns">
       <div
         v-for="(item, index) in store.images.rows"
@@ -25,6 +25,8 @@
         </div>
       </div>
     </div>
+    <div v-if="loading" class="divider text-center" data-content="Loading..."></div>
+    <div v-if="!loading && !hasMore" class="divider text-center" data-content="The end"></div>
     <div class="modal" :class="{active: activeIndex >= 0}" @click="onShow(-1)">
       <div class="modal-container">
         <div class="modal-body">
@@ -57,7 +59,16 @@ export default {
       store,
       hovered: null,
       activeIndex: -1,
+      loading: false,
     };
+  },
+  computed: {
+    hasMore() {
+      return this.store.search.offset < this.store.images.total;
+    },
+  },
+  watch: {
+    'store.images.total': 'checkMore',
   },
   methods: {
     getThumbSrc(item) {
@@ -90,6 +101,16 @@ export default {
     },
     onNext() {
       if (this.hasNext()) this.activeIndex += 1;
+    },
+    async checkMore() {
+      const { scrollArea } = this.$refs;
+      if (this.loading || !scrollArea) return;
+      const { scrollTop, scrollHeight, clientHeight } = scrollArea;
+      if (scrollTop + clientHeight + 100 >= scrollHeight) {
+        this.loading = true;
+        await loadMore();
+        this.loading = false;
+      }
     },
   },
 };
