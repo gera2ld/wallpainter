@@ -12,7 +12,7 @@ def get_item(key):
 @register
 def get_list(params=None):
     params = params or {}
-    page = int(params.get('page', 1))
+    offset = int(params.get('offset', 0))
     per = int(params.get('per', 10))
     where = params.get('where')
     sql_rows = ['SELECT * FROM images']
@@ -26,10 +26,10 @@ def get_list(params=None):
                 sql_where.append(key)
                 args_where.append(value)
         if sql_where:
-            sql_where = 'WHERE ' + ' AND '.join(f'`{key}`=?' for key in where_sql)
+            sql_where = 'WHERE ' + ' AND '.join(f'`{key}`=?' for key in sql_where)
     if sql_where:
         sql_rows.append(sql_where)
-    sql_rows.append(f'LIMIT {per} OFFSET {(page - 1) * per}')
+    sql_rows.append(f'LIMIT {per} OFFSET {offset}')
     sql_rows = ' '.join(sql_rows)
     rows = db.query_sql(sql_rows, args_where, False)
 
@@ -39,7 +39,7 @@ def get_list(params=None):
     sql_count = ' '.join(sql_count)
     count = db.query_sql(sql_count, args_where)
 
-    return {'rows': rows, 'total': count['total'], 'page': page, 'per': per}
+    return {'rows': rows, 'total': count['total'], 'offset': offset, 'per': per}
 
 @register
 def set_item(key, data):

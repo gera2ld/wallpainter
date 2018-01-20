@@ -18,6 +18,34 @@ export async function rpc(method, params) {
   throw data.error;
 }
 
+export function getWhere() {
+  const where = {};
+  const { status } = store.search.where;
+  if (status) where.status = +status || 0;
+  return where;
+}
+
+async function loadPage() {
+  const search = {
+    per: store.search.per,
+    offset: store.search.offset,
+    where: getWhere(),
+  };
+  return rpc('getList', search);
+}
+
 export async function updateList() {
-  store.images = await rpc('getList', store.search);
+  store.search.offset = 0;
+  const images = await loadPage();
+  store.images = images;
+  store.search.offset = images.offset + images.rows.length;
+}
+
+export async function loadMore() {
+  if (store.search.offset < store.images.total) {
+    const images = await loadPage();
+    images.rows = store.images.rows.slice(0, images.offset).concat(images.rows);
+    store.images = images;
+    store.search.offset = images.offset + images.rows.length;
+  }
 }
