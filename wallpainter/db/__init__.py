@@ -1,6 +1,7 @@
 import sys
 import sqlite3
 import asyncio
+from ..utils import update_file
 
 class SqliteStorage:
     def __init__(self, filename='data/db.sqlite3', loop=None):
@@ -27,17 +28,17 @@ extra TEXT)''',
         ]:
             self.cur.execute(sql)
 
-    def safe_exec_sql(self, *args):
-        self.loop.call_soon_threadsafe(self.exec_sql, *args)
+    def safe_add_item(self, *args):
+        self.loop.call_soon_threadsafe(self.add_item, *args)
 
     def exec_sql(self, sql, args=()):
-        print('exec:', sql, ','.join(map(str, args)))
+        print('exec', sql, ','.join(map(str, args)), sep='/')
         sys.stdout.flush()
         self.cur.execute(sql, args)
         self.conn.commit()
 
     def query_sql(self, sql, args=(), fetchone=True):
-        print('query:', sql, ','.join(map(str, args)))
+        print('query', sql, ','.join(map(str, args)), sep='/')
         sys.stdout.flush()
         self.cur.execute(sql, args)
         if fetchone: return self.row_to_dict(self.cur.fetchone())
@@ -50,5 +51,13 @@ extra TEXT)''',
         for key in row.keys():
             values[key] = row[key]
         return values
+
+    def add_item(self, data):
+        columns, args = zip(*data.items())
+        columns = ','.join(f'`{column}`' for column in columns)
+        placeholders = ','.join('?' for _ in args)
+        sql = f'INSERT OR IGNORE INTO images ({columns}) VALUES ({placeholders})'
+        self.exec_sql(sql, args)
+        update_file(data['key'], 0)
 
 db = SqliteStorage()

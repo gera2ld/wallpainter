@@ -1,8 +1,7 @@
-import os
 import re
-import json
 import inspect
 from aiohttp import web
+from ..utils import *
 
 methods = {}
 
@@ -63,16 +62,3 @@ async def start_server(loop):
     app.router.add_get('/images/{size}/{key}', image_handler)
     server = await loop.create_server(app.make_handler(), '127.0.0.1', 19870)
     return server
-
-def update_file(key, status):
-    os.makedirs('data/selected', exist_ok=True)
-    src = f'data/full/{key}.jpg'
-    dst = f'data/selected/{key}.jpg'
-    if status == 0:
-        if not os.path.isfile(dst):
-            print('link:', key)
-            os.link(src, dst)
-    else:
-        if os.path.isfile(dst):
-            print('unlink:', key)
-            os.remove(dst)
