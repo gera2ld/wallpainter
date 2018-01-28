@@ -41,7 +41,7 @@
                 />
               </div>
             </header>
-            <div class="flex-auto modal-image" :style="{backgroundImage: `url(${getFullSrc(activeItem)})`}"></div>
+            <preview class="flex-auto modal-image" :src="getFullSrc(activeItem)" />
           </div>
           <div
             class="modal-button modal-button-left btn-icon"
@@ -62,10 +62,14 @@
 </template>
 
 <script>
+import Preview from './preview';
 import { BASE_URL, store } from './store';
 import { rpc, loadMore } from './service';
 
 export default {
+  components: {
+    Preview,
+  },
   data() {
     return {
       store,
