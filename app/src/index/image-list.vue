@@ -27,7 +27,7 @@
     </div>
     <div v-if="loading" class="divider text-center" data-content="Loading..."></div>
     <div v-if="!loading && !hasMore" class="divider text-center" data-content="The end"></div>
-    <div class="modal" :class="{active: activeIndex >= 0}" @click="onShow(-1)">
+    <div class="modal" :class="{active: activeIndex >= 0}">
       <div class="modal-container">
         <div class="modal-body" v-if="activeItem">
           <div class="d-flex flex-column h-100">
@@ -35,10 +35,11 @@
               <div class="flex-auto text-gray" v-text="activeItem.key"></div>
               <div>
                 <i
-                  class="fa ml-2 btn-icon"
+                  class="fa mr-2 btn-icon"
                   :class="{0: 'fa-toggle-on', 1: 'fa-toggle-off'}[activeItem.status]"
                   @click="onToggle(activeItem)"
                 />
+                <i class="fa fa-remove btn-icon" @click="onShow(-1)" />
               </div>
             </header>
             <preview class="flex-auto modal-image" :src="getFullSrc(activeItem)" />

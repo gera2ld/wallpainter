@@ -1,5 +1,5 @@
 <template>
-  <div class="preview" ref="preview" @wheel="onWheel">
+  <div class="preview" ref="preview" @wheel="onWheel" @mousedown="onMousedown" @mousemove="onMousemove" @mouseup="onMouseup">
     <img v-if="validSrc" :src="validSrc" :style="getStyle()" />
   </div>
 </template>
@@ -64,6 +64,13 @@ export default {
         width: `${this.width}px`,
       };
     },
+    setPos(x, y) {
+      const baseRect = this.$refs.preview.getBoundingClientRect();
+      const dw = baseRect.width - this.width;
+      const dh = baseRect.height - this.height;
+      this.x = Math.min(dw > 0 ? dw / 2 : 0, Math.max(dw, x));
+      this.y = Math.min(dh > 0 ? dh / 2 : 0, Math.max(dh, y));
+    },
     onWheel(e) {
       if (Math.abs(e.deltaY)) {
         const baseRect = this.$refs.preview.getBoundingClientRect();
@@ -75,11 +82,28 @@ export default {
         let y = e.clientY - baseRect.top;
         x -= scale2 / scale1 * (x - this.x);
         y -= scale2 / scale1 * (y - this.y);
-        const dw = baseRect.width - this.width;
-        const dh = baseRect.height - this.height;
-        this.x = Math.min(dw > 0 ? dw / 2 : 0, Math.max(dw, x));
-        this.y = Math.min(dh > 0 ? dh / 2 : 0, Math.max(dh, y));
+        this.setPos(x, y);
       }
+    },
+    onMousedown(e) {
+      e.preventDefault();
+      this.dragging = {
+        x: this.x,
+        y: this.y,
+        cx: e.clientX,
+        cy: e.clientY,
+      };
+    },
+    onMousemove(e) {
+      if (!this.dragging) return;
+      const dx = e.clientX - this.dragging.cx;
+      const dy = e.clientY - this.dragging.cy;
+      this.x = this.dragging.x + dx;
+      this.y = this.dragging.y + dy;
+    },
+    onMouseup() {
+      this.dragging = null;
+      this.setPos(this.x, this.y);
     },
   },
   mounted() {
