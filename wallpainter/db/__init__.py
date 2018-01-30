@@ -23,7 +23,7 @@ filename VARCHAR,
 key VARCHAR,
 status INTEGER DEFAULT 0,
 extra TEXT,
-created_at DATETIME DEFAULT STRFTIME('%s', 'now'))''',
+created_at DATETIME DEFAULT (STRFTIME('%s', 'now')))''',
             'CREATE UNIQUE INDEX IF NOT EXISTS images_index_id ON images (source, url)',
             'CREATE UNIQUE INDEX IF NOT EXISTS images_index_key ON images (key)',
         ]:
