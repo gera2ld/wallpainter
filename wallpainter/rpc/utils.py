@@ -2,6 +2,7 @@ import re
 import inspect
 from aiohttp import web
 from ..utils import *
+from .logger import logger
 
 methods = {}
 
@@ -46,7 +47,7 @@ async def image_handler(request):
     except FileNotFoundError:
         raise web.HTTPNotFound()
     else:
-        print('loaded image:', filename)
+        logger.info('loaded image: %s', filename)
         return web.Response(
             headers={
                 'Cache-Control': 'public, max-age=31536000',
@@ -62,3 +63,9 @@ async def start_server(loop):
     app.router.add_get('/images/{size}/{key}', image_handler)
     server = await loop.create_server(app.make_handler(), '127.0.0.1', 19870)
     return server
+
+def send_message(cmd, arg=None):
+    if arg is None:
+        print(cmd, flush=True)
+    else:
+        print(cmd, arg, flush=True)

@@ -11,4 +11,10 @@ module.exports = {
       title: 'WallPainter',
     },
   },
+  loader: {
+    entry: './src/loader',
+    html: {
+      title: 'Loading...',
+    },
+  },
 };

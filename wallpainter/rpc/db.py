@@ -1,6 +1,6 @@
-import sys
 import sqlite3
 import asyncio
+from .logger import logger
 from ..utils import update_file
 
 class SqliteStorage:
@@ -33,14 +33,12 @@ created_at DATETIME DEFAULT (STRFTIME('%s', 'now')))''',
         self.loop.call_soon_threadsafe(self.add_item, *args)
 
     def exec_sql(self, sql, args=()):
-        print('exec', sql, ','.join(map(str, args)), sep='/')
-        sys.stdout.flush()
+        logger.info('exec/%s/%s', sql, ','.join(map(str, args)))
         self.cur.execute(sql, args)
         self.conn.commit()
 
     def query_sql(self, sql, args=(), fetchone=True):
-        print('query', sql, ','.join(map(str, args)), sep='/')
-        sys.stdout.flush()
+        logger.info('query/%s/%s', sql, ','.join(map(str, args)))
         self.cur.execute(sql, args)
         if fetchone: return self.row_to_dict(self.cur.fetchone())
         return [self.row_to_dict(item) for item in self.cur.fetchall()]

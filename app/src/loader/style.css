@@ -1,0 +1,36 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-image: radial-gradient(circle at center, #e0e4cc 0%, #3d8eb9 100%);
+  background-size: cover;
+}
+
+h1 {
+  position: absolute;
+  top: 200px;
+  left: 50%;
+  transform: translateX(-50%);
+  transform-origin: center -100px;
+  animation: pendulum 2s ease-in-out alternate infinite;
+  &::before {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 100px;
+    left: 50%;
+    bottom: 100%;
+    background: #3d8eb9;
+  }
+}
+
+@keyframes pendulum {
+  0% {
+    transform: translateX(-50%) rotate(-30deg);
+  }
+  100% {
+    transform: translateX(-50%) rotate(30deg);
+  }
+}

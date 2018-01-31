@@ -1,5 +1,5 @@
 from .utils import register, start_server, update_file
-from ..db import db
+from .db import db
 
 @register
 async def say_hi(name):

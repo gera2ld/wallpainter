@@ -8,7 +8,7 @@
   "main": "index.js",
   "scripts": {
     "dev:web": "gulp dev",
-    "dev:core": "cross-env ENTRY_URL=http://localhost:3000 electron .",
+    "dev:core": "cross-env ENTRY_PREFIX=http://localhost:3000 electron .",
     "dev:core:unix": "cross-env PYTHON=python/bin/python yarn dev:core",
     "dev:core:win": "cross-env PYTHON=python/scripts/python yarn dev:core",
     "prebuild": "gulp clean",
