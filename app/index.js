@@ -65,8 +65,6 @@ function initLoader() {
 }
 
 function initMain() {
-  if (loader) loader.close();
-
   mainWindow = new BrowserWindow({
     width: 1024,
     height: 800,
@@ -84,4 +82,6 @@ function initMain() {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
+
+  if (loader) loader.close();
 }
