@@ -67,3 +67,12 @@ def rebuild():
     for row in rows:
         update_file(row['key'], row['status'])
     return True
+
+@register
+def add_item(data):
+    columns, args = zip(*data.items())
+    columns = ','.join(f'`{column}`' for column in columns)
+    placeholders = ','.join('?' for _ in args)
+    sql = f'INSERT OR IGNORE INTO images ({columns}) VALUES ({placeholders})'
+    db.exec_sql(sql, args)
+    update_file(data['key'], 0)

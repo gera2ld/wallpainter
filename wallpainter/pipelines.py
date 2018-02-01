@@ -1,6 +1,9 @@
 import sqlite3
 import json
+import threading
+import requests
 from .db import db
+from .settings import PORT
 
 class SqlitePipeline:
     @classmethod
@@ -15,4 +18,14 @@ class SqlitePipeline:
             'url': image['url'],
             'key': key,
             'extra': json.dumps(item['extra'], separators=(',', ':')),
+        })
+
+    def rpc(self, command, params):
+        thread = threading.Thread(target=self._rpc, args=(command, params))
+        thread.start()
+
+    def _rpc(self, command, params):
+        requests.post(f'http://127.0.0.1:{PORT}/api', json={
+            'method': command,
+            'params': params,
         })

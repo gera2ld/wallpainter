@@ -29,9 +29,6 @@ created_at DATETIME DEFAULT (STRFTIME('%s', 'now')))''',
         ]:
             self.cur.execute(sql)
 
-    def safe_add_item(self, *args):
-        self.loop.call_soon_threadsafe(self.add_item, *args)
-
     def exec_sql(self, sql, args=()):
         logger.info('exec/%s/%s', sql, ','.join(map(str, args)))
         self.cur.execute(sql, args)
@@ -50,13 +47,5 @@ created_at DATETIME DEFAULT (STRFTIME('%s', 'now')))''',
         for key in row.keys():
             values[key] = row[key]
         return values
-
-    def add_item(self, data):
-        columns, args = zip(*data.items())
-        columns = ','.join(f'`{column}`' for column in columns)
-        placeholders = ','.join('?' for _ in args)
-        sql = f'INSERT OR IGNORE INTO images ({columns}) VALUES ({placeholders})'
-        self.exec_sql(sql, args)
-        update_file(data['key'], 0)
 
 db = SqliteStorage()

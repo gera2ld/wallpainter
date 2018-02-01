@@ -1,6 +1,7 @@
 import re
 import inspect
 from aiohttp import web
+from ..settings import PORT
 from ..utils import *
 from .logger import logger
 
@@ -61,7 +62,7 @@ async def start_server(loop):
     app = web.Application(loop=loop)
     app.router.add_post('/api', api_handler)
     app.router.add_get('/images/{size}/{key}', image_handler)
-    server = await loop.create_server(app.make_handler(), '127.0.0.1', 19870)
+    server = await loop.create_server(app.make_handler(), '127.0.0.1', PORT)
     return server
 
 def send_message(cmd, arg=None):
