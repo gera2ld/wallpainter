@@ -33,6 +33,9 @@
         <div class="ml-2">
           <i class="fa fa-refresh btn-icon" @click="onRefresh" />
         </div>
+        <div class="ml-2">
+          <i class="fa fa-download btn-icon" :class="{ disabled: store.crawling }" @click="onDownload" />
+        </div>
       </section>
     </header>
     <image-list @setSource="onSetSource" />
@@ -43,6 +46,7 @@
 </template>
 
 <script>
+import { ipcRenderer } from 'electron';
 import { store } from './store';
 import { updateList } from './service';
 import ImageList from './image-list';
@@ -75,6 +79,9 @@ export default {
       this.store.sources.forEach(item => {
         item.active = item.source === source;
       });
+    },
+    onDownload() {
+      if (!this.store.crawling) ipcRenderer.send('crawl');
     },
   },
 };

@@ -2,7 +2,6 @@ import sqlite3
 import json
 import threading
 import requests
-from .db import db
 from .settings import PORT
 
 class SqlitePipeline:
@@ -13,7 +12,7 @@ class SqlitePipeline:
     def process_item(self, item, spider):
         image = item['images'][0]
         key = image['path'][5:-4]
-        db.add_item({
+        self.rpc('add_item', {
             'source': spider.name,
             'url': image['url'],
             'key': key,

@@ -36,4 +36,7 @@ targets.push(merge(base, {
     !IS_DEV && new ExtractTextPlugin('[name].css'),
     INLINE && new HtmlWebpackInlineSourcePlugin(),
   ].filter(Boolean),
+  externals: {
+    electron: 'require("electron")',
+  },
 }));

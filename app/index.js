@@ -2,9 +2,9 @@ const path = require('path');
 const url = require('url');
 const electron = require('electron');
 const events = require('./events');
-const initRPC = require('./rpc');
+const { initRPC, crawl } = require('./rpc');
 
-const { app, BrowserWindow } = electron;
+const { app, BrowserWindow, ipcMain } = electron;
 const ENTRY_PREFIX = process.env.ENTRY_PREFIX || url.format({
   pathname: path.join(__dirname, 'dist'),
   protocol: 'file:',
@@ -30,6 +30,18 @@ app.on('activate', () => {
 events.on('server.ready', () => {
   server.ready = true;
   initMain();
+});
+
+let crawling = false;
+ipcMain.on('crawl', event => {
+  if (crawling) return;
+  crawling = true;
+  crawl();
+  event.sender.send('crawl.status', crawling);
+  events.once('crawl.end', () => {
+    crawling = false;
+    event.sender.send('crawl.status', crawling);
+  });
 });
 
 function initLoader() {

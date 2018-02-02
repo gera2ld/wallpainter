@@ -2,16 +2,14 @@ const path = require('path');
 const { spawn } = require('child_process');
 const events = require('./events');
 
-let child;
-module.exports = initRPC;
+exports.initRPC = initRPC;
+exports.crawl = crawl;
 
 function initRPC() {
-  child = spawn(process.env.PYTHON || 'python', [
+  const child = safeSpawn([
     '-m',
     'wallpainter.rpc',
-  ], {
-    cwd: path.resolve('..'),
-  });
+  ]);
   child.stdout.on('data', chunk => {
     const data = String(chunk).trim();
     const i = data.indexOf(' ');
@@ -19,17 +17,38 @@ function initRPC() {
     events.emit(`server.${cmd}`, arg);
     // process.stdout.write(data);
   });
+}
+
+function crawl() {
+  const child = safeSpawn([
+    '-m',
+    'wallpainter',
+  ]);
+  child.stdout.on('data', chunk => {
+    const data = String(chunk);
+    process.stdout.write(data);
+  });
+  child.on('close', code => {
+    events.emit('crawl.end', code);
+  });
+}
+
+function safeSpawn(args) {
+  const child = spawn(process.env.PYTHON || 'python', args, {
+    cwd: path.resolve('..'),
+  });
   child.stderr.on('data', chunk => {
     const data = String(chunk);
     process.stderr.write(data);
   });
   child.on('close', code => {
-    console.info('exit', code);
+    console.info(`exit/${args.join(' ')}/${code}`);
   });
-
-  process.on('SIGINT', () => { process.exit(); });
-  process.on('SIGTERM', () => { process.exit(); });
   process.on('exit', () => {
     child.kill('SIGINT');
   });
+  return child;
 }
+
+process.on('SIGINT', () => { process.exit(); });
+process.on('SIGTERM', () => { process.exit(); });

@@ -1,6 +1,7 @@
 /python
 __pycache__
-/data
+/data/*
+!.gitkeep
 
 node_modules
 yarn.lock

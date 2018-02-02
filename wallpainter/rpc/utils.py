@@ -9,8 +9,10 @@ methods = {}
 
 re_camelcase = re.compile('_(\w)')
 def register(method):
-    name = re_camelcase.sub(lambda m: m.group(1).upper(), method.__name__)
-    methods[name] = method
+    snakecase = method.__name__
+    camelcase = re_camelcase.sub(lambda m: m.group(1).upper(), snakecase)
+    methods[snakecase] = method
+    if camelcase != snakecase: methods[camelcase] = method
     return method
 
 async def api_handler(request):
@@ -25,6 +27,7 @@ async def api_handler(request):
     result = {
         'success': True,
     }
+    logger.info(f'rpc/{method_name}/{params}')
     try:
         ret = method(*params)
         if inspect.iscoroutine(ret): ret = await ret
@@ -33,7 +36,7 @@ async def api_handler(request):
         result['success'] = False
         result['error'] = str(e)
         import traceback
-        traceback.print_exc()
+        logger.error(traceback.format_exc())
     return web.json_response(result)
 
 async def image_handler(request):
