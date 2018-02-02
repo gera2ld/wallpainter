@@ -13,7 +13,7 @@
             :style="{backgroundImage: `url(${getThumbSrc(item)})`}"
             @click="onShow(index)">
           </div>
-          <div class="label label-ghost label-xs image-tag" v-text="item.source"></div>
+          <div class="label label-ghost label-xs image-tag" v-text="item.source" @click="onSetSource(item.source)"></div>
           <div class="image-buttons p-1" v-if="hovered === item">
             <i class="fa fa-arrows-alt btn-icon" @click="onShow(index)" />
             <i
@@ -132,6 +132,9 @@ export default {
         await loadMore();
         this.loading = false;
       }
+    },
+    onSetSource(source) {
+      this.$emit('setSource', source);
     },
   },
 };

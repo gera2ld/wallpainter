@@ -22,6 +22,10 @@ export function getWhere() {
   const where = {};
   const { status } = store.search.where;
   if (status) where.status = +status || 0;
+  const sources = store.sources
+    .filter(({ active }) => active)
+    .map(({ source }) => source);
+  if (sources.length) where.source = sources;
   return where;
 }
 
@@ -32,6 +36,19 @@ async function loadPage() {
     where: getWhere(),
   };
   return rpc('getList', search);
+}
+
+export function initialize() {
+  initSources();
+  updateList();
+}
+
+async function initSources() {
+  const sources = await rpc('getSources');
+  store.sources = sources.map(source => ({
+    source,
+    active: false,
+  }));
 }
 
 export async function updateList() {

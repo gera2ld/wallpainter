@@ -10,6 +10,10 @@ def get_item(key):
     return db.query_sql('SELECT * FROM images WHERE key=?', (key,))
 
 @register
+def get_sources():
+    return [item['source'] for item in db.query_sql('SELECT DISTINCT source FROM images', fetchone=False)]
+
+@register
 def get_list(params=None):
     params = params or {}
     offset = int(params.get('offset', 0))
@@ -22,11 +26,17 @@ def get_list(params=None):
     if where:
         for key in ('source', 'status'):
             value = where.get(key)
-            if value is not None:
-                sql_where.append(key)
+            if isinstance(value, list):
+                length = len(value)
+                if length > 0:
+                    placeholders = ','.join('?' for _ in range(length))
+                    sql_where.append(f'`{key}` IN ({placeholders})')
+                    args_where.extend(value)
+            elif value is not None:
+                sql_where.append(f'`{key}`=?')
                 args_where.append(value)
         if sql_where:
-            sql_where = 'WHERE ' + ' AND '.join(f'`{key}`=?' for key in sql_where)
+            sql_where = 'WHERE ' + ' AND '.join(sql_where)
     if sql_where:
         sql_rows.append(sql_where)
     sql_rows.append(f'LIMIT {per} OFFSET {offset}')
