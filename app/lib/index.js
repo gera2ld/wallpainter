@@ -6,7 +6,7 @@ const { initRPC, crawl } = require('./rpc');
 
 const { app, BrowserWindow, ipcMain } = electron;
 const ENTRY_PREFIX = process.env.ENTRY_PREFIX || url.format({
-  pathname: path.join(__dirname, 'dist'),
+  pathname: path.resolve(__dirname, '../dist'),
   protocol: 'file:',
   slashes: true,
 });
