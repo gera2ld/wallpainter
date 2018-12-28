@@ -23,8 +23,8 @@ export function getWhere() {
   const { status } = store.search.where;
   if (status) where.status = +status || 0;
   const sources = store.sources
-    .filter(({ active }) => active)
-    .map(({ source }) => source);
+  .filter(({ active }) => active)
+  .map(({ source }) => source);
   if (sources.length) where.source = sources;
   return where;
 }

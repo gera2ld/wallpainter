@@ -1,9 +1,1 @@
-module.exports = {
-  // Transform inline comments
-  parser: require('postcss-scss'),
-  plugins: [
-    require('autoprefixer'),
-    // Transform SCSS into CSS
-    require('precss'),
-  ],
-};
+module.exports = require('webpack-util/postcss').config;

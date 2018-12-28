@@ -1,5 +1,11 @@
 <template>
-  <div class="preview" ref="preview" @wheel="onWheel" @mousedown="onMousedown" @mousemove="onMousemove" @mouseup="onMouseup">
+  <div
+    class="preview"
+    ref="preview"
+    @wheel="onWheel"
+    @mousedown="onMousedown"
+    @mousemove="onMousemove"
+    @mouseup="onMouseup">
     <img v-if="validSrc" :src="validSrc" :style="getStyle()" />
   </div>
 </template>

@@ -3,6 +3,7 @@
     <div class="columns">
       <div
         v-for="(item, index) in store.images.rows"
+        :key="index"
         class="column col-3"
         @mouseenter="hovered = item"
         @mouseleave="hovered = null">
@@ -13,7 +14,11 @@
             :style="{backgroundImage: `url(${getThumbSrc(item)})`}"
             @click="onShow(index)">
           </div>
-          <div class="label label-ghost label-xs image-tag" v-text="item.source" @click="onSetSource(item.source)"></div>
+          <div
+            class="label label-ghost label-xs image-tag"
+            v-text="item.source"
+            @click="onSetSource(item.source)"
+          />
           <div class="image-buttons p-1" v-if="hovered === item">
             <i class="fa fa-arrows-alt btn-icon" @click="onShow(index)" />
             <i

@@ -8,15 +8,24 @@
         <div class="d-flex">
           <label class="mr-1">Source:</label>
           <div class="form-autocomplete">
-            <div class="form-autocomplete-input form-input" @click="showSourcePanel = !showSourcePanel">
+            <div
+              class="form-autocomplete-input form-input"
+              @click="showSourcePanel = !showSourcePanel">
               <div v-if="!activeSources.length" class="text-gray">all</div>
-              <div class="label label-ghost label-xs image-tag" v-for="item in activeSources">
+              <div
+                class="label label-ghost label-xs image-tag"
+                v-for="(item, index) in activeSources"
+                :key="index">
                 {{item.source}}
                 <a class="btn btn-clear" @click.prevent="onToggleSource(item)"></a>
               </div>
             </div>
             <ul class="menu" v-show="showSourcePanel">
-              <li class="menu-item" v-for="item in store.sources" :class="{ active: item.active }">
+              <li
+                class="menu-item"
+                v-for="(item, index) in store.sources"
+                :key="index"
+                :class="{ active: item.active }">
                 <a href="#" v-text="item.source" @click.prevent="onToggleSource(item)"></a>
               </li>
             </ul>
@@ -34,7 +43,11 @@
           <i class="fa fa-refresh btn-icon" @click="onRefresh" />
         </div>
         <div class="ml-2">
-          <i class="fa fa-download btn-icon" :class="{ disabled: store.crawling }" @click="onDownload" />
+          <i
+            class="fa fa-download btn-icon"
+            :class="{ disabled: store.crawling }"
+            @click="onDownload"
+          />
         </div>
       </section>
     </header>
@@ -76,7 +89,7 @@ export default {
       item.active = !item.active;
     },
     onSetSource(source) {
-      this.store.sources.forEach(item => {
+      this.store.sources.forEach((item) => {
         item.active = item.source === source;
       });
     },
