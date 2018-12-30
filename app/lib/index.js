@@ -33,7 +33,7 @@ events.on('server.ready', () => {
 });
 
 let crawling = false;
-ipcMain.on('crawl', event => {
+ipcMain.on('crawl', (event) => {
   if (crawling) return;
   crawling = true;
   crawl();

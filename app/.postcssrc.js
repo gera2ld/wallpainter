@@ -1,1 +1,3 @@
-module.exports = require('webpack-util/postcss').config;
+const { config } = require('webpack-util/postcss');
+
+module.exports = config;
