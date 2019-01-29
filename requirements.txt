@@ -1,4 +1,0 @@
-scrapy
-aiohttp
-requests
-pillow

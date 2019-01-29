@@ -1,3 +1,4 @@
-from . import crawl
+import subprocess
+from .rpc import initialize
 
-crawl()
+initialize()

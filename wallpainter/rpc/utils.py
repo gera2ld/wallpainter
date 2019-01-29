@@ -67,9 +67,3 @@ async def start_server(loop):
     app.router.add_get('/images/{size}/{key}', image_handler)
     server = await loop.create_server(app.make_handler(), '127.0.0.1', PORT)
     return server
-
-def send_message(cmd, arg=None):
-    if arg is None:
-        print(cmd, flush=True)
-    else:
-        print(cmd, arg, flush=True)

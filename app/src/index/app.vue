@@ -45,7 +45,7 @@
         <div class="ml-2">
           <i
             class="fa fa-download btn-icon"
-            :class="{ disabled: store.crawling }"
+            :class="{ disabled: crawling }"
             @click="onDownload"
           />
         </div>
@@ -59,10 +59,13 @@
 </template>
 
 <script>
-import { ipcRenderer } from 'electron';
 import { store } from './store';
-import { updateList } from './service';
+import { updateList, rpc } from './service';
 import ImageList from './image-list';
+
+function delay(time) {
+  return new Promise(resolve => setTimeout(resolve, time));
+}
 
 export default {
   components: {
@@ -72,6 +75,7 @@ export default {
     return {
       store,
       showSourcePanel: false,
+      crawling: false,
     };
   },
   watch: {
@@ -93,8 +97,17 @@ export default {
         item.active = item.source === source;
       });
     },
-    onDownload() {
-      if (!this.store.crawling) ipcRenderer.send('crawl');
+    async onDownload() {
+      if (this.crawling) return;
+      await rpc('start_crawling');
+      this.crawling = true;
+      while (this.crawling) {
+        await this.queryStatus();
+        await delay(2000);
+      }
+    },
+    async queryStatus() {
+      this.crawling = await rpc('query_crawling_status');
     },
   },
 };

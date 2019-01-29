@@ -1,16 +1,34 @@
 const path = require('path');
 const url = require('url');
 const electron = require('electron');
+const { spawn } = require('child_process');
 const events = require('./events');
-const { initRPC, crawl } = require('./rpc');
 
-const { app, BrowserWindow, ipcMain } = electron;
+const { app, BrowserWindow } = electron;
 const ENTRY_PREFIX = process.env.ENTRY_PREFIX || url.format({
   pathname: path.resolve(__dirname, '../dist'),
   protocol: 'file:',
   slashes: true,
 });
-const server = {};
+
+const server = spawn('pipenv', ['run', 'start'], {
+  cwd: path.resolve('..'),
+});
+server.stdout.on('data', (chunk) => {
+  const data = String(chunk).trim();
+  const i = data.indexOf(' ');
+  const cmd = i >= 0 ? data.slice(0, i) : data;
+  const args = i >= 0 ? data.slice(i + 1) : null;
+  events.emit(`server.${cmd}`, args);
+  console.info(data);
+});
+server.on('close', () => {
+  console.error('Server crashed');
+  app.quit();
+});
+process.on('exit', () => {
+  server.kill('SIGINT');
+});
 
 let loader;
 let mainWindow;
@@ -18,39 +36,15 @@ let mainWindow;
 app.on('ready', initLoader);
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  app.quit();
 });
 
-app.on('activate', () => {
-  if (mainWindow == null) initLoader();
-});
-
-events.on('server.ready', () => {
-  server.ready = true;
+events.once('server.ready', () => {
   initMain();
 });
 
-let crawling = false;
-ipcMain.on('crawl', (event) => {
-  if (crawling) return;
-  crawling = true;
-  crawl();
-  event.sender.send('crawl.status', crawling);
-  events.once('crawl.end', () => {
-    crawling = false;
-    event.sender.send('crawl.status', crawling);
-  });
-});
-
 function initLoader() {
-  if (server.ready) {
-    initMain();
-    return;
-  }
-  if (server.initialized) return;
-  server.initialized = true;
+  if (mainWindow) return;
   loader = new BrowserWindow({
     width: 400,
     height: 300,
@@ -61,7 +55,6 @@ function initLoader() {
   loader.on('closed', () => {
     loader = null;
   });
-  initRPC();
 }
 
 function initMain() {

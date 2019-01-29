@@ -1,9 +1,7 @@
+from multiprocessing import Process
 from .utils import register, start_server, update_file
 from .db import db
-
-@register
-async def say_hi(name):
-    return f'Hi, {name}!'
+from ..crawl import crawl
 
 @register
 def get_item(key):
@@ -86,3 +84,20 @@ def add_item(data):
     sql = f'INSERT OR IGNORE INTO images ({columns}) VALUES ({placeholders})'
     db.exec_sql(sql, args)
     update_file(data['key'], 0)
+
+crawling = None
+
+@register
+def start_crawling():
+    global crawling
+    if crawling and crawling.is_alive():
+        return
+    crawling = Process(target=crawl)
+    crawling.start()
+
+@register
+def query_crawling_status():
+    global crawling
+    if crawling and crawling.is_alive():
+        return True
+    return False

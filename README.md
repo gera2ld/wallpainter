@@ -1,28 +1,37 @@
-wallpainter
-===
+# wallpainter
 
 Download images as desktop wallpapers.
 
-Development
----
+## Development
+
+Server:
 
 ```sh
-# Prepare backend
-$ pip3 install -r requirements.txt
-
-# Prepare frontend
-$ cd app
-$ yarn
-
-# Start
-$ cd app
-$ yarn dev:core
+$ pipenv install
+$ pipenv run start
 ```
 
-Start
----
+Client:
 
 ```sh
 $ cd app
+
+# Development web page
+$ yarn
+$ yarn dev:web
+
+# Open in electron
+$ yarn dev
+```
+
+## Start
+
+```sh
+$ cd app
+
+# Build static files
+$ yarn build
+
+# Start electron
 $ yarn start
 ```

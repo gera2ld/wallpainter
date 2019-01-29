@@ -7,14 +7,12 @@
   "license": "ISC",
   "scripts": {
     "dev:web": "plaid develop",
-    "dev:core": "cross-env ENTRY_PREFIX=http://localhost:3000 electron .",
-    "dev:core:unix": "cross-env PYTHON=python/bin/python npm run dev:core",
-    "dev:core:win": "cross-env PYTHON=python/scripts/python npm run dev:core",
+    "dev": "cross-env ENTRY_PREFIX=http://localhost:3000 electron .",
+    "start": "electron .",
     "prebuild": "npm run lint",
     "build": "plaid build",
     "lint": "eslint --ext .js,.vue .",
     "svgo": "svgo --config .svgo.yml src/resources/svg",
-    "start": "electron .",
     "analyze": "cross-env RUN_ENV=analyze npm run build"
   },
   "engines": {
