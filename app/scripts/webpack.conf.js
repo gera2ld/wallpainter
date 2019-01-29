@@ -1,14 +1,10 @@
-const baseConfigProvider = require('webpack-util/config/webpack.base.conf');
-const webpackUtil = require('webpack-util/webpack');
-const { parseConfig } = require('webpack-util/util');
-const pages = require('./pages.conf');
+const { modifyWebpackConfig } = require('@gera2ld/plaid/util');
 
-module.exports = async () => {
-  const config = await parseConfig(baseConfigProvider);
+module.exports = modifyWebpackConfig(async (config) => {
   config.externals = {
     ...config.externals,
     electron: 'require("electron")',
   };
   config.devServer.port = 3000;
-  return webpackUtil.html({ pages })(config);
-};
+  return config;
+});

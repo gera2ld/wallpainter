@@ -1,3 +1,4 @@
-const { config } = require('webpack-util/postcss');
+const { combineConfigSync } = require('@gera2ld/plaid/util/helpers');
+const precss = require('@gera2ld/plaid/postcss/precss');
 
-module.exports = config;
+module.exports = combineConfigSync({}, [precss]);
