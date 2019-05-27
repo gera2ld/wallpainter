@@ -4,7 +4,7 @@
  * `value.html` is the options object passed to HtmlWebpackPlugin.
  */
 
-module.exports = {
+exports.pages = {
   index: {
     entry: './src/index',
     html: {
@@ -16,5 +16,14 @@ module.exports = {
     html: {
       title: 'Loading...',
     },
+  },
+};
+
+exports.global = {
+  devServer: {
+    port: 3000,
+  },
+  externals: {
+    electron: 'require("electron")',
   },
 };

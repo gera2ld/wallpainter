@@ -7,8 +7,8 @@ Download images as desktop wallpapers.
 Server:
 
 ```sh
-$ pipenv install
-$ pipenv run start
+$ pip install -r requirements.txt
+$ python -m wallpainter
 ```
 
 Client:

@@ -11,7 +11,7 @@ const ENTRY_PREFIX = process.env.ENTRY_PREFIX || url.format({
   slashes: true,
 });
 
-const server = spawn('pipenv', ['run', 'start'], {
+const server = spawn('python', ['-m', 'wallpainter'], {
   cwd: path.resolve('..'),
 });
 server.stdout.on('data', (chunk) => {

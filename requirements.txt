@@ -1,0 +1,4 @@
+aiohttp==3.5.4
+Pillow==6.0.0
+requests==2.22.0
+Scrapy==1.6.0
