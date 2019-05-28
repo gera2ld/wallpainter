@@ -1,9 +1,9 @@
 import asyncio
 from . import methods
-from .utils import start_server
+from .utils import start_server, send_message
 
 def ready():
-    print('ready', flush=True)
+    send_message('ready')
 
 def initialize():
     loop = asyncio.get_event_loop()

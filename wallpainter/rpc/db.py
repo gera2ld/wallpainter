@@ -1,6 +1,6 @@
 import sqlite3
 import asyncio
-from .logger import logger
+from ..logger import logger
 from ..utils import update_file
 
 class SqliteStorage:

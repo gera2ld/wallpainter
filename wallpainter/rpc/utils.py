@@ -3,7 +3,7 @@ import inspect
 from aiohttp import web
 from ..settings import PORT
 from ..utils import *
-from .logger import logger
+from ..logger import logger
 
 methods = {}
 

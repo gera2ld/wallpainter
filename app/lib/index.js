@@ -14,16 +14,26 @@ const ENTRY_PREFIX = process.env.ENTRY_PREFIX || url.format({
 const server = spawn('python', ['-m', 'wallpainter'], {
   cwd: path.resolve('..'),
 });
+const SERVER_CMD_PREFIX = '[server] CMD: ';
 server.stdout.on('data', (chunk) => {
-  const data = String(chunk).trim();
-  const i = data.indexOf(' ');
-  const cmd = i >= 0 ? data.slice(0, i) : data;
-  const args = i >= 0 ? data.slice(i + 1) : null;
-  events.emit(`server.${cmd}`, args);
+  let data = String(chunk).trimRight();
   console.info(data);
+  if (data.startsWith(SERVER_CMD_PREFIX)) {
+    data = data.slice(SERVER_CMD_PREFIX.length);
+    const i = data.indexOf(' ');
+    const cmd = i >= 0 ? data.slice(0, i) : data;
+    const args = i >= 0 ? data.slice(i + 1) : null;
+    const eventType = `server.${cmd}`;
+    events.emit(eventType, args);
+    console.info('[app]', eventType, args);
+  }
+});
+server.stderr.on('data', (chunk) => {
+  const data = String(chunk).trim();
+  console.error(data);
 });
 server.on('close', () => {
-  console.error('Server crashed');
+  console.error('[server]', 'crashed');
   app.quit();
 });
 process.on('exit', () => {
