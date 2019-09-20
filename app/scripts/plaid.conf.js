@@ -9,6 +9,9 @@ exports.pages = {
     entry: './src/index',
     html: {
       title: 'WallPainter',
+      js: [
+        { content: 'function load(...args){console.log(args);}' },
+      ],
     },
   },
   loader: {
@@ -22,8 +25,5 @@ exports.pages = {
 exports.global = {
   devServer: {
     port: 3000,
-  },
-  externals: {
-    electron: 'require("electron")',
   },
 };

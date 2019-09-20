@@ -20,7 +20,7 @@
                 <a class="btn btn-clear" @click.prevent="onToggleSource(item)"></a>
               </div>
             </div>
-            <ul class="menu" v-show="showSourcePanel">
+            <ul class="menu p-absolute" v-show="showSourcePanel">
               <li
                 class="menu-item"
                 v-for="(item, index) in store.sources"
@@ -63,10 +63,6 @@ import { store } from './store';
 import { updateList, rpc } from './service';
 import ImageList from './image-list';
 
-function delay(time) {
-  return new Promise(resolve => setTimeout(resolve, time));
-}
-
 export default {
   components: {
     ImageList,
@@ -99,15 +95,9 @@ export default {
     },
     async onDownload() {
       if (this.crawling) return;
-      await rpc('start_crawling');
       this.crawling = true;
-      while (this.crawling) {
-        await this.queryStatus();
-        await delay(2000);
-      }
-    },
-    async queryStatus() {
-      this.crawling = await rpc('query_crawling_status');
+      await rpc('crawl');
+      this.crawling = false;
     },
   },
 };

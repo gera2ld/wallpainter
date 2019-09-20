@@ -69,7 +69,7 @@
 
 <script>
 import Preview from './preview';
-import { BASE_URL, store } from './store';
+import { store } from './store';
 import { rpc, loadMore } from './service';
 
 export default {
@@ -98,10 +98,10 @@ export default {
   },
   methods: {
     getThumbSrc(item) {
-      return `${BASE_URL}/images/big/${item.key}`;
+      return `images/${item.key}/thumbnail`;
     },
     getFullSrc(item) {
-      return `${BASE_URL}/images/full/${item.key}`;
+      return `images/${item.key}/original`;
     },
     async onToggle(item) {
       const { status } = item;

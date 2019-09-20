@@ -4,9 +4,12 @@ import 'font-awesome/css/font-awesome.css';
 import App from './app';
 import { initialize } from './service';
 
-const vm = new Vue({
-  render: h => h(App),
-}).$mount();
-document.body.append(vm.$el);
+async function main() {
+  await initialize();
+  const vm = new Vue({
+    render: h => h(App),
+  }).$mount();
+  document.body.append(vm.$el);
+}
 
-initialize();
+main();

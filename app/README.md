@@ -8,17 +8,11 @@ Requires Node.js v8.0+.
 Development
 ---
 ``` sh
-$ npm run dev
+$ yarn dev
 ```
 
 Building
 ---
 ```sh
-$ npm run build
-```
-
-Lint
----
-``` sh
-$ npm run lint
+$ yarn build
 ```

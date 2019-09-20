@@ -1,21 +1,30 @@
-import axios from 'axios';
-import { BASE_URL, store } from './store';
+import { store } from './store';
 
-const URL_API = `${BASE_URL}/api`;
+let backend;
+
+// function defer() {
+//   const deferred = {};
+//   deferred.promise = new Promise((resolve, reject) => {
+//     deferred.resolve = resolve;
+//     deferred.reject = reject;
+//   });
+//   return deferred;
+// }
 
 export async function rpc(method, params) {
-  if (process.env.NODE_ENV === 'development') {
-    console.info('RPC request:', method, params);
+  try {
+    if (params == null) params = [];
+    else if (!Array.isArray(params)) params = [params];
+    const result = await backend[method](...params);
+    if (process.env.NODE_ENV === 'development') {
+      console.info('[rpc][success]', method, params, result);
+    }
+    return result;
+  } catch (err) {
+    if (process.env.NODE_ENV === 'development') {
+      console.info('[rpc][error]', method, params, err);
+    }
   }
-  const { data } = await axios.post(URL_API, {
-    method,
-    params,
-  });
-  if (process.env.NODE_ENV === 'development') {
-    console.info('RPC response:', data);
-  }
-  if (data.success) return data.data;
-  throw data.error;
 }
 
 export function getWhere() {
@@ -38,9 +47,12 @@ async function loadPage() {
   return rpc('getList', search);
 }
 
-export function initialize() {
-  initSources();
-  updateList();
+export async function initialize() {
+  [backend] = await carlo.loadParams();
+  await Promise.all([
+    initSources(),
+    updateList(),
+  ]);
 }
 
 async function initSources() {
