@@ -22,6 +22,10 @@ class Handler {
     return { total, rows, offset, per };
   }
 
+  setItem(key, update) {
+    return this.db.get('images').find({ key }).assign(update).write();
+  }
+
   async crawl() {
     await new BingCrawler(this.db).start();
   }
