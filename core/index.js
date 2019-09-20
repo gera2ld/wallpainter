@@ -1,9 +1,9 @@
 const fs = require('fs').promises;
 const carlo = require('carlo');
 const { rpc } = require('carlo/rpc');
-const Jimp = require('jimp');
 const initializeDatabase = require('./db');
 const Handler = require('./handler');
+const pool = require('./pool');
 
 async function main() {
   const db = await initializeDatabase();
@@ -21,9 +21,7 @@ async function main() {
         body = await fs.readFile(`data/${size}/${key}.jpg`);
       } catch (err) {
         if (size === 'thumbnail' && err.code === 'ENOENT') {
-          const img = await Jimp.read(`data/original/${key}.jpg`);
-          await img.scaleToFit(270, 270);
-          await img.writeAsync(`data/thumbnail/${key}.jpg`);
+          await pool.sendMessage('getThumbnail', key);
           body = await fs.readFile(`data/${size}/${key}.jpg`);
         }
       }
