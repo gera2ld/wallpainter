@@ -24,7 +24,10 @@ class BingCrawler {
 
   fetchImage(item) {
     const url = `https://cn.bing.com${item.url}`;
-    if (this.db.get('images').find({ url }).value()) return;
+    if (this.db.get('images').find({ url }).value()) {
+      console.info('[bing] Skipped existed:', url);
+      return;
+    }
     this.crawler.queue({
       uri: url,
       extra: item,
