@@ -1,9 +1,11 @@
 const fs = require('fs').promises;
 const carlo = require('carlo');
 const { rpc } = require('carlo/rpc');
+const Pool = require('@gera2ld/process-pool');
 const initializeDatabase = require('./db');
 const Handler = require('./handler');
-const pool = require('./pool');
+
+const pool = new Pool(3, `${__dirname}/worker.js`);
 
 async function main() {
   const db = await initializeDatabase();
@@ -21,7 +23,7 @@ async function main() {
         body = await fs.readFile(`data/${size}/${key}.jpg`);
       } catch (err) {
         if (size === 'thumbnail' && err.code === 'ENOENT') {
-          await pool.sendMessage('getThumbnail', key);
+          await pool.invoke('getThumbnail', key);
           body = await fs.readFile(`data/${size}/${key}.jpg`);
         }
       }

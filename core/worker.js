@@ -1,4 +1,5 @@
 const Jimp = require('jimp');
+const worker = require('@gera2ld/process-pool/lib/worker');
 
 class Handler {
   async getThumbnail(key) {
@@ -8,15 +9,4 @@ class Handler {
   }
 }
 
-const handler = new Handler();
-
-process.on('message', async ({ id, command, params }) => {
-  let result;
-  let error;
-  try {
-    result = await handler[command](...params);
-  } catch (err) {
-    error = `${err}` || 'Unknown error';
-  }
-  process.send({ id, result, error });
-});
+worker.setHandler(new Handler());
