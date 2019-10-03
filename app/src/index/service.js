@@ -30,7 +30,7 @@ export async function rpc(method, params) {
 export function getWhere() {
   const where = {};
   const { status } = store.search.where;
-  if (status) where.status = +status || 0;
+  if (status) where.status = status;
   const sources = store.sources
   .filter(({ active }) => active)
   .map(({ source }) => source);

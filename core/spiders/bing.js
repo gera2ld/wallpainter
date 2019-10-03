@@ -1,13 +1,17 @@
 const fs = require('fs').promises;
 const crypto = require('crypto');
 const Crawler = require('crawler');
+const { STATUS_ENABLED } = require('../consts');
 
 class BingCrawler {
-  constructor(db) {
-    this.db = db;
+  constructor(handler) {
+    this.handler = handler;
+    this.options = handler.options;
+    this.events = handler.events;
     this.crawler = new Crawler({
       jQuery: false,
       callback: (error, res, done) => {
+        this.done += 1;
         this.notifyProgress();
         if (error) {
           console.error(error);
@@ -20,11 +24,19 @@ class BingCrawler {
         done();
       },
     });
+    this.events.on('progress', (done, remain) => {
+      console.info('Progress:', done, '/', done + remain);
+    });
+  }
+
+  notifyProgress() {
+    this.events.emit('progress', this.done, this.crawler.queueSize);
   }
 
   fetchImage(item) {
     const url = `https://cn.bing.com${item.url}`;
-    if (this.db.get('images').find({ url }).value()) {
+    const { db, dataDir } = this.options;
+    if (db.get('images').find({ url }).value()) {
       console.info('[bing] Skipped existed:', url);
       return;
     }
@@ -34,44 +46,34 @@ class BingCrawler {
       encoding: null,
       jQuery: false,
       callback: async (error, res, done) => {
-        this.notifyProgress();
         const hash = crypto.createHash('md5');
         hash.update(res.body);
         const key = hash.digest('hex');
-        await fs.writeFile(`data/original/${key}.jpg`, res.body);
+        await fs.writeFile(`${dataDir}/original/${key}.jpg`, res.body);
         console.info('[bing] Added image:', key);
-        this.db.get('images').push({
+        const imageItem = {
           key,
           url,
-          status: 0,
+          status: STATUS_ENABLED,
           source: 'bing',
           extra: item,
-        }).write();
+        };
+        db.get('images').push(imageItem).write();
+        this.events.emit('imageAdd', imageItem);
+        this.done += 1;
+        this.notifyProgress();
         done();
       },
     });
   }
 
-  notifyProgress() {
-    this.done += 1;
-    console.info('Progress:', this.done, '/', this.done + this.crawler.queueSize);
-    if (this.callback) {
-      this.callback({
-        done: this.done,
-        remain: this.crawler.queueSize,
-      });
-    }
-  }
-
-  start(callback) {
+  start() {
     return new Promise((resolve) => {
       this.done = 0;
       this.crawler.queue('https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=10');
-      this.callback = callback;
       this.crawler.on('drain', () => {
-        this.callback = null;
         resolve();
-        console.info('Finished');
+        this.events.emit('finish');
       });
     });
   }

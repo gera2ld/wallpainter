@@ -2,7 +2,7 @@
   "name": "wallpainter",
   "private": true,
   "version": "1.0.0",
-  "main": "core/index.js",
+  "main": "core/main-carlo.js",
   "repository": "git@github.com:gera2ld/wallpainter.git",
   "author": "Gerald <gera2ld@163.com>",
   "license": "MIT",

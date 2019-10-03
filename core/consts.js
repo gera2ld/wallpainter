@@ -1,0 +1,2 @@
+exports.STATUS_ENABLED = 1;
+exports.STATUS_DISABLED = 2;

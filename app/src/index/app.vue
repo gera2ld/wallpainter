@@ -35,8 +35,8 @@
           <label class="mr-1">Status:</label>
           <select class="form-select select-sm" v-model="store.search.where.status">
             <option value="">all</option>
-            <option value="0">enabled</option>
-            <option value="1">disabled</option>
+            <option :value="STATUS_ENABLED">enabled</option>
+            <option :value="STATUS_DISABLED">disabled</option>
           </select>
         </div>
         <div class="ml-2">
@@ -62,6 +62,7 @@
 import { store } from './store';
 import { updateList, rpc } from './service';
 import ImageList from './image-list';
+import { STATUS_ENABLED, STATUS_DISABLED } from './consts';
 
 export default {
   components: {
@@ -69,6 +70,8 @@ export default {
   },
   data() {
     return {
+      STATUS_ENABLED,
+      STATUS_DISABLED,
       store,
       showSourcePanel: false,
       crawling: false,

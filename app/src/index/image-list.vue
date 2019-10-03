@@ -10,7 +10,7 @@
         <div class="image">
           <div
             class="image-bg"
-            :class="{disabled: item.status === 1}"
+            :class="{disabled: item.status === STATUS_DISABLED}"
             :style="{backgroundImage: `url(${getThumbSrc(item)})`}"
             @click="onShow(index)">
           </div>
@@ -26,7 +26,7 @@
             <i class="fa fa-arrows-alt btn-icon" @click="onShow(index)" />
             <i
               class="fa ml-2 btn-icon"
-              :class="{0: 'fa-toggle-on', 1: 'fa-toggle-off'}[item.status]"
+              :class="getStatusClass(item)"
               @click="onToggle(item)"
             />
           </div>
@@ -35,8 +35,8 @@
     </div>
     <div v-if="loading" class="divider text-center" data-content="Loading..."></div>
     <div v-if="!loading && !hasMore" class="divider text-center" data-content="The end"></div>
-    <div class="modal" :class="{active: activeIndex >= 0}">
-      <div class="modal-container">
+    <div class="modal" :class="{active: activeIndex >= 0}" @mousedown="onShow(-1)">
+      <div class="modal-container" @mousedown.stop>
         <div class="modal-body" v-if="activeItem">
           <div class="d-flex flex-column h-100">
             <header class="d-flex" @click.stop>
@@ -44,7 +44,7 @@
               <div>
                 <i
                   class="fa mr-2 btn-icon"
-                  :class="{0: 'fa-toggle-on', 1: 'fa-toggle-off'}[activeItem.status]"
+                  :class="getStatusClass(activeItem)"
                   @click="onToggle(activeItem)"
                 />
                 <i class="fa fa-remove btn-icon" @click="onShow(-1)" />
@@ -74,6 +74,7 @@
 import Preview from './preview';
 import { store } from './store';
 import { rpc, loadMore } from './service';
+import { STATUS_ENABLED, STATUS_DISABLED } from './consts';
 
 export default {
   components: {
@@ -81,6 +82,8 @@ export default {
   },
   data() {
     return {
+      STATUS_DISABLED,
+      STATUS_ENABLED,
       store,
       hovered: null,
       activeIndex: -1,
@@ -106,11 +109,15 @@ export default {
     getFullSrc(item) {
       return `images/${item.key}/original`;
     },
+    getStatusClass(item) {
+      return ['fa-toggle-off', 'fa-toggle-on'][+(item.status !== STATUS_DISABLED)];
+    },
     async onToggle(item) {
       const { status } = item;
-      item.status = 1 - status;
+      if (item.status === STATUS_ENABLED) item.status = STATUS_DISABLED;
+      else item.status = STATUS_ENABLED;
       try {
-        await rpc('setItem', [item.key, { status: item.status }]);
+        await rpc('setItem', [{ key: item.key, status: item.status }]);
       } catch (err) {
         console.error(err);
         item.status = status;

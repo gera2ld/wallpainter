@@ -3,7 +3,7 @@ export const store = {
   sources: [],
   search: {
     where: {
-      status: '0',
+      status: 1,
     },
     per: 16,
     page: 1,
