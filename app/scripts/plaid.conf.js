@@ -9,9 +9,6 @@ exports.pages = {
     entry: './src/index',
     html: {
       title: 'WallPainter',
-      js: [
-        { content: 'function load(...args){console.log(args);}' },
-      ],
     },
   },
   loader: {

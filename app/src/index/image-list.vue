@@ -14,11 +14,14 @@
             :style="{backgroundImage: `url(${getThumbSrc(item)})`}"
             @click="onShow(index)">
           </div>
-          <div
-            class="label label-ghost label-xs image-tag"
-            v-text="item.source"
-            @click="onSetSource(item.source)"
-          />
+          <div class="image-info">
+            <div
+              class="label label-ghost label-xs image-tag"
+              v-if="item.source"
+              v-text="item.source"
+              @click="onSetSource(item.source)">
+            </div>
+          </div>
           <div class="image-buttons p-1" v-if="hovered === item">
             <i class="fa fa-arrows-alt btn-icon" @click="onShow(index)" />
             <i
@@ -130,17 +133,28 @@ export default {
     },
     async checkMore() {
       const { scrollArea } = this.$refs;
-      if (this.loading || !scrollArea) return;
-      const { scrollTop, scrollHeight, clientHeight } = scrollArea;
-      if (scrollTop + clientHeight + 100 >= scrollHeight) {
-        this.loading = true;
-        await loadMore();
-        this.loading = false;
+      if (this.loading || !scrollArea || this.checkingMore) return;
+      this.checkingMore = true;
+      while (this.hasMore) {
+        const { scrollTop, scrollHeight, clientHeight } = scrollArea;
+        const lessThanOnePage = scrollHeight <= clientHeight;
+        const nearBottom = scrollTop + clientHeight + 100 >= scrollHeight;
+        if (lessThanOnePage || nearBottom) {
+          this.loading = true;
+          await loadMore();
+          this.loading = false;
+        } else {
+          break;
+        }
       }
+      this.checkingMore = false;
     },
     onSetSource(source) {
       this.$emit('setSource', source);
     },
+  },
+  mounted() {
+    this.checkMore();
   },
 };
 </script>
@@ -173,10 +187,12 @@ export default {
       filter: opacity(.5);
     }
   }
+  &-info {
+    height: 1.5rem;
+  }
   &-tag {
     display: inline-block;
-    margin: .2rem;
-    margin-left: 0;
+    margin-right: .2rem;
     cursor: default;
   }
 }
