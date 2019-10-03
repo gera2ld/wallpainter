@@ -21,13 +21,13 @@
     }
   },
   "devDependencies": {
-    "@gera2ld/plaid": "~1.4.11",
+    "@gera2ld/plaid": "~1.4.12",
     "@gera2ld/plaid-vue": "~1.4.9",
-    "@gera2ld/plaid-webpack": "~1.4.11",
-    "husky": "^3.0.5"
+    "@gera2ld/plaid-webpack": "~1.5.0",
+    "husky": "^3.0.8"
   },
   "dependencies": {
-    "@babel/runtime": "^7.6.0",
+    "@babel/runtime": "^7.6.2",
     "@gera2ld/rem": "^0.1.2",
     "font-awesome": "^4.7.0",
     "spectre.css": "^0.5.8",
