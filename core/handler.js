@@ -1,5 +1,6 @@
-const fs = require('fs').promises;
+const fsPromises = require('fs').promises;
 const EventEmitter = require('events');
+const Pool = require('@gera2ld/process-pool');
 const BingCrawler = require('./spiders/bing');
 const { wrapError, ignoreErrorCode } = require('./util');
 const { STATUS_DISABLED } = require('./consts');
@@ -7,14 +8,23 @@ const { STATUS_DISABLED } = require('./consts');
 class Handler {
   constructor(options) {
     this.options = options;
+    this.pool = new Pool(3, {
+      modulePath: `${__dirname}/worker.js`,
+      options: {
+        env: {
+          ...process.env,
+          WALLPAINTER_DATA_DIR: options.dataDir,
+        },
+      },
+    });
     this.events = new EventEmitter();
     const { dataDir } = options;
     this.linkImage = wrapError(
-      key => fs.link(`${dataDir}/original/${key}.jpg`, `${dataDir}/selected/${key}.jpg`),
+      key => fsPromises.link(`${dataDir}/original/${key}.jpg`, `${dataDir}/selected/${key}.jpg`),
       ignoreErrorCode('EEXIST'),
     );
     this.unlinkImage = wrapError(
-      key => fs.unlink(`${dataDir}/selected/${key}.jpg`),
+      key => fsPromises.unlink(`${dataDir}/selected/${key}.jpg`),
       ignoreErrorCode('ENOENT'),
     );
     this.events.on('imageAdd', (item) => {
@@ -65,6 +75,14 @@ class Handler {
   async buildAllSelected() {
     const items = this.options.db.get('images').value();
     return Promise.all(items.map(item => this.buildSelected(item)));
+  }
+
+  async createThumbnail(key) {
+    await this.pool.invoke('getThumbnail', key);
+  }
+
+  shrinkPool() {
+    return this.pool.shrink();
   }
 }
 

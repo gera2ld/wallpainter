@@ -15,11 +15,24 @@ export async function rpc(method, params) {
   try {
     if (params == null) params = [];
     else if (!Array.isArray(params)) params = [params];
-    const result = await backend[method](...params);
+    // const res = await fetch('/api', {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     method,
+    //     params,
+    //   }),
+    // });
+    // const { data, error } = await res.json();
+    // if (error) throw error;
+    const data = await backend[method](...params);
     if (process.env.NODE_ENV === 'development') {
-      console.info('[rpc][success]', method, params, result);
+      console.info('[rpc][success]', method, params, data);
     }
-    return result;
+    return data;
   } catch (err) {
     if (process.env.NODE_ENV === 'development') {
       console.info('[rpc][error]', method, params, err);
@@ -48,7 +61,13 @@ async function loadPage() {
 }
 
 export async function initialize() {
-  [backend] = await carlo.loadParams();
+  if (window.require) {
+    // Electron
+    backend = window.require('electron').remote.getGlobal('wallPainterHandler');
+  } else if (typeof carlo !== 'undefined') {
+    // Carlo
+    [backend] = await carlo.loadParams();
+  }
   await Promise.all([
     initSources(),
     updateList(),

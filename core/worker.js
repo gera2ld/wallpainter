@@ -1,8 +1,7 @@
-const path = require('path');
 const Jimp = require('jimp');
 const worker = require('@gera2ld/process-pool/lib/worker');
 
-const dataDir = path.resolve('data');
+const dataDir = process.env.WALLPAINTER_DATA_DIR || `${__dirname}/../data`;
 
 class Handler {
   async getThumbnail(key) {

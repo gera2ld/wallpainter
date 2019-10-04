@@ -1,14 +1,13 @@
 const fs = require('fs').promises;
 const carlo = require('carlo');
 const { rpc } = require('carlo/rpc');
-const Pool = require('@gera2ld/process-pool');
 const initialize = require('.');
 const { wrapError } = require('./util');
 
-const pool = new Pool(3, `${__dirname}/worker.js`);
+const dataDir = 'data';
 
 async function main() {
-  const { handler } = await initialize('data');
+  const { handler } = await initialize(dataDir);
   const app = await carlo.launch();
   app.on('exit', () => process.exit());
   app.serveHandler(wrapError(async request => {
@@ -18,11 +17,11 @@ async function main() {
       const [, key, size] = imageFields;
       let body;
       try {
-        body = await fs.readFile(`data/${size}/${key}.jpg`);
+        body = await fs.readFile(`${dataDir}/${size}/${key}.jpg`);
       } catch (err) {
         if (size === 'thumbnail' && err.code === 'ENOENT') {
-          await pool.invoke('getThumbnail', key);
-          body = await fs.readFile(`data/${size}/${key}.jpg`);
+          await handler.createThumbnail(key);
+          body = await fs.readFile(`${dataDir}/${size}/${key}.jpg`);
         } else {
           throw err;
         }
