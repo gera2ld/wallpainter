@@ -9,9 +9,8 @@
   "dependencies": {
     "@gera2ld/process-pool": "^0.2.0",
     "carlo": "^0.9.46",
-    "crawler": "^1.2.1",
-    "from2": "^2.3.0",
-    "jimp": "^0.8.3",
+    "crawler": "^1.2.2",
+    "jimp": "^0.16.1",
     "lowdb": "^1.0.0"
   },
   "scripts": {

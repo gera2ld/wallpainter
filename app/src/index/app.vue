@@ -51,7 +51,7 @@
         </div>
       </section>
     </header>
-    <image-list @setSource="onSetSource" />
+    <image-list @set-source="onSetSource" />
     <footer class="mt-2 text-gray">
       Designed and built with <span class="text-error">&hearts;</span> by Gerald
     </footer>
@@ -61,7 +61,7 @@
 <script>
 import { store } from './store';
 import { updateList, rpc } from './service';
-import ImageList from './image-list';
+import ImageList from './image-list.vue';
 import { STATUS_ENABLED, STATUS_DISABLED } from './consts';
 
 export default {

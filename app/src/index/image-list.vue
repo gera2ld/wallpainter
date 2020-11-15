@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import Preview from './preview';
+import Preview from './preview.vue';
 import { store } from './store';
 import { rpc, loadMore } from './service';
 import { STATUS_ENABLED, STATUS_DISABLED } from './consts';
@@ -157,7 +157,7 @@ export default {
       this.checkingMore = false;
     },
     onSetSource(source) {
-      this.$emit('setSource', source);
+      this.$emit('set-source', source);
     },
   },
   mounted() {

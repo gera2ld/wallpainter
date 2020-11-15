@@ -24,8 +24,10 @@ async function initialize({
     let win = new BrowserWindow({
       webPreferences: {
         nodeIntegration: true,
+        enableRemoteModule: true,
       },
     });
+    // win.webContents.openDevTools();
     win.removeMenu();
     win.webContents.session.protocol.interceptStreamProtocol('https', async (req, callback) => {
       const url = new URL(req.url);
